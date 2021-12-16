@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+    <script>
+
+
+
+        function addTask() {
+            console.log("VV adds")
+            var text = document.getElementById("input-task").value;
+            console.log(text)
+
+            var timestamp = new Date().getTime();
+            var item = document.createElement("li")
+            item.setAttribute("id", "task" + timestamp);
+            var taskscheck = document.createElement("input");
+            taskscheck.setAttribute("type", "checkbox");
+            taskscheck.setAttribute("onclick","scratchTask()")
+            var taskspan = document.createElement("span");
+            taskspan.setAttribute("class", "task");
+            taskspan.innerText = text;
+            var taskbtn = document.createElement("button");
+            taskbtn.setAttribute("class", "delete-btn");
+            taskbtn.setAttribute("onclick", "deleteTask()");
+            taskbtn.innerText = 'X';
+            taskbtn.setAttribute("id", timestamp);
+            item.appendChild(taskscheck);
+            item.appendChild(taskspan);
+            item.appendChild(taskbtn);
+
+            var list = document.getElementById("task-list");
+            list.appendChild(item);
+
+            document.getElementById("input-task").value = "";
+            let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+            let jsonTask = {id:""+timestamp,check:false, text:text};
+            console.log(jsonTask)
+            taskList.push(jsonTask);
+            localStorage.setItem("tasks", JSON.stringify(taskList))
+            console.log(taskList)
+            console.log("end add")
+
+        }
+
+        function deleteTask() {
+            console.log("VV deletes" + event.target.id)
+            var element = document.getElementById("task" + event.target.id);
+            element.parentNode.removeChild(element);
+            let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+            taskList = taskList.filter((element) =>element.id !== event.target.id);
+            localStorage.setItem("tasks", JSON.stringify(taskList))
+            console.log(taskList)
+            console.log("end delete")
+        }
+
+        function scratchTask() {
+            console.log("VV scratches" +  event.currentTarget.parentElement.id)
+            var parent = document.getElementById(event.currentTarget.parentElement.id);
+            if (parent.children[1].style.textDecoration === 'line-through') {
+                parent.children[1].style.textDecoration = 'none';
+                parent.children[1].style.checked=false;
+            } else {
+                parent.children[1].style.textDecoration = 'line-through';
+                parent.children[1].style.checked=true;
+            }
+            console.log("end scratch")
+        }
+    </script>
+</head>
+<body>
+<h1>To-Do List</h1>
+<input id="input-task">
+<button id="add-task-button" onclick="addTask()">Add Task</button>
+<ul id="task-list">
+<!--    <li id="task1"><input type="checkbox" onclick="scratchTask()"/><span class="task">Read Real World Software Book</span>-->
+<!--        <button onclick="deleteTask()" id="1" class="delete-btn">X</button>-->
+<!--    </li>-->
+<!--    <li id="task2"><input type="checkbox" onclick="scratchTask()"/><span class="task">Think about graduate school track</span>-->
+<!--        <button onclick="deleteTask()" id="2" class="delete-btn">X</button>-->
+<!--    </li>-->
+<!--    <li id="task3"><input type="checkbox" onclick="scratchTask()"/><span class="task">DO some code exercises</span>-->
+<!--        <button onclick="deleteTask()" id="3" class="delete-btn">X</button>-->
+<!--    </li>-->
+</ul>
+<script>
+    (function() {
+        console.log("loading")
+        let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+        console.log(taskList)
+        taskList.forEach((jsonTask)=>{
+            var text =jsonTask.text;
+            console.log(text)
+
+            var timestamp =jsonTask.id;
+            var item = document.createElement("li")
+            item.setAttribute("id", "task" + timestamp);
+            var taskscheck = document.createElement("input");
+            taskscheck.setAttribute("type", "checkbox");
+            taskscheck.setAttribute("checked", jsonTask.check);
+            taskscheck.setAttribute("onclick","scratchTask()")
+            var taskspan = document.createElement("span");
+            taskspan.setAttribute("class", "task");
+            taskspan.innerText = text;
+            var taskbtn = document.createElement("button");
+            taskbtn.setAttribute("class", "delete-btn");
+            taskbtn.setAttribute("onclick", "deleteTask()");
+            taskbtn.innerText = 'X';
+            taskbtn.setAttribute("id", timestamp);
+            item.appendChild(taskscheck);
+            item.appendChild(taskspan);
+            item.appendChild(taskbtn);
+
+            var list = document.getElementById("task-list") ;
+            list.appendChild(item);
+        })
+        console.log("end loading")
+    })();
+</script>
+</body>
+</html>
